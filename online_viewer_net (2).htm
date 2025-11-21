@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Site</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #ffd7e8; /* pastel pink */
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      transition: background 0.6s ease;
+    }
+
+    /* Spotify Logo */
+    #enterImg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 240px;
+      cursor: pointer;
+      opacity: 0;
+      animation: fadeIn 1.5s forwards;
+      transition: transform 0.3s ease, filter 0.3s ease, opacity 0.5s ease;
+      filter: drop-shadow(0 0 12px #1db95470);
+      user-select: none;
+      z-index: 10;
+    }
+
+    #enterImg:hover {
+      transform: translate(-50%, -50%) scale(1.06);
+      filter: drop-shadow(0 0 25px #1db954);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .fadeOut {
+      opacity: 0 !important;
+      transform: translate(-50%, -50%) scale(0.9) !important;
+    }
+
+    /* Hidden container while preloading */
+    #preloadContainer {
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+      top: -100px;
+      left: -100px;
+    }
+
+    /* Fullscreen container */
+    #container {
+      width: 100%;
+      height: 100%;
+      display: none;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Spotify Logo -->
+<img id="enterImg"
+     src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg"
+     alt="Enter">
+
+<!-- Hidden Preload Iframe -->
+<div id="preloadContainer">
+  <iframe
+    id="preloadVideo"
+    src="https://player.vimeo.com/video/1139051047?autoplay=0&muted=0&controls=0&autopause=0"
+  ></iframe>
+</div>
+
+<!-- Real Visible Player (will swap instantly) -->
+<div id="container">
+  <iframe
+    id="video"
+    src=""
+    allow="autoplay; fullscreen"
+    allowfullscreen
+  ></iframe>
+</div>
+
+<script>
+  const enterImg = document.getElementById("enterImg");
+  const video = document.getElementById("video");
+  const preloadVideo = document.getElementById("preloadVideo");
+
+  preloadVideo.onload = () => {
+    console.log("Video preloaded in background");
+  };
+
+  enterImg.addEventListener("click", () => {
+
+    enterImg.classList.add("fadeOut");
+
+    setTimeout(() => {
+      video.src = "https://player.vimeo.com/video/1139051047?autoplay=1&muted=0&controls=0&autopause=0";
+
+      document.getElementById("container").style.display = "block";
+
+      const cont = document.getElementById("container");
+      if (cont.requestFullscreen) cont.requestFullscreen();
+      else if (cont.webkitRequestFullscreen) cont.webkitRequestFullscreen();
+
+      enterImg.style.display = "none";
+    }, 400);
+  });
+</script>
+
+</body>
+</html>
